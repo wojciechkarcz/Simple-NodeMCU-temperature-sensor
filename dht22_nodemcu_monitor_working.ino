@@ -2,9 +2,10 @@
 #include <ESP8266WebServer.h>
 #include "DHTesp.h"
 
-
 DHTesp dht;
 
+#Define pin number of NodeMcu with connected DHT22 sensor
+int dhtPin = 5; 
 
 ESP8266WebServer server(80);
 long randNumber;
@@ -12,9 +13,10 @@ long x;
 
 void setup() {
   Serial.begin(115200);
-  dht.setup(5, DHTesp::DHT22);
+  dht.setup(dhtPin, DHTesp::DHT22);
   
-  WiFi.begin("HUAWEI-B535", "GRODEK0507");  
+  #Change your wifi ssid and password
+  WiFi.begin("Your WiFi SSID", "Your WiFi password");  
 
   while (WiFi.status() != WL_CONNECTED) {  
 
@@ -25,21 +27,15 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());                        
 
-  server.on("/python", handlePath);
-  server.on("/led", handleLed);
   server.on("/temp", handleTemp);
    
   server.begin();                                                   
   Serial.println("Server listening");
-
-
-
 }
 
 void loop() {
   server.handleClient(); 
 }
-
 
 void handleTemp() {
   float h = dht.getHumidity();
@@ -58,32 +54,4 @@ void handleTemp() {
 }
 
 
-void handlePath() { 
 
-  randNumber = random(1000);
-  String newrandom = String(randNumber);
-  delay(3000);
-
-  server.send(200, "text/plain", newrandom);
-
-  Serial.println(newrandom);
-}
-
-void handleLed() {
-  String message = "";
-
-  if (server.arg("time")==""){     
-
-  message = "Temperature Argument not found";
-
-  } else {
-       
-  x = server.arg("time").toInt();
-  
-  digitalWrite(LED_BUILTIN, LOW);   
-  delay(x);                      
-  digitalWrite(LED_BUILTIN, HIGH);
-
-   server.send(200, "text/plain", "LED blinking");
-}
-}
