@@ -4,18 +4,19 @@
 
 DHTesp dht;
 
-#Define pin number of NodeMcu with connected DHT22 sensor
+//Define pin number of NodeMcu with connected DHT22 sensor
 int dhtPin = 5; 
 
 ESP8266WebServer server(80);
-long randNumber;
-long x;
+
+
+//---SETUP---
 
 void setup() {
   Serial.begin(115200);
   dht.setup(dhtPin, DHTesp::DHT22);
   
-  #Change your wifi ssid and password
+  //Change your wifi ssid and password
   WiFi.begin("Your WiFi SSID", "Your WiFi password");  
 
   while (WiFi.status() != WL_CONNECTED) {  
@@ -32,6 +33,9 @@ void setup() {
   server.begin();                                                   
   Serial.println("Server listening");
 }
+
+
+//---LOOP---
 
 void loop() {
   server.handleClient(); 
